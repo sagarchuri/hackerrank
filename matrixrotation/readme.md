@@ -1,4 +1,4 @@
-Matri Rotation
+Matrix Rotation
 
 Given a 2D matrix, a, of dimension MxN and a positive integer R. You have to rotate the matrix R times and print the resultant matrix. Rotation should be in anti-clockwise direction.
 
@@ -16,21 +16,21 @@ Output
 Print the rotated matrix.
 
 Constraints 
-2 <= M, N <= 300 
-1 <= R <= 109 
-min(M, N) % 2 == 0 
-1 <= aij <= 108, where i ∈ [1..M] & j ∈ [1..N]
+2 <= M, N <= 300 <br/>
+1 <= R <= 109 <br/>
+min(M, N) % 2 == 0 <br/>
+1 <= aij <= 108, where i ∈ [1..M] & j ∈ [1..N]<br/>
 
-Sample Input #00
+Sample Input 
 
-4 4 1
-1 2 3 4
-5 6 7 8
-9 10 11 12
-13 14 15 16
-Sample Output #00
+4 4 1 <br/>
+1 2 3 4<br/>
+5 6 7 8<br/>
+9 10 11 12<br/>
+13 14 15 16<br/>
+Sample Output 
 
-2 3 4 8
-1 7 11 12
-5 6 10 16
-9 13 14 15
+2 3 4 8<br/>
+1 7 11 12<br/>
+5 6 10 16<br/>
+9 13 14 15<br/>
