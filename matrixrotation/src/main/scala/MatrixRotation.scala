@@ -5,27 +5,31 @@ import scala.annotation.tailrec
   */
 object MatrixRotation {
 
-
   def main(args: Array[String]) {
     val input = io.Source.stdin.getLines().takeWhile(_.nonEmpty).map(_.split(" ")).map(_.map(_.toInt).toList).toList
     val M = input(0)(0)
     val N = input(0)(1)
     val R = input(0)(2)
+
     require(M >= 2 ,"Matrix rows should be greater than 1")
     require(N <= 300 ,"Matrix columns should not exceed 300")
     require(input.tail.size == M, "number of rows do not match")
     require(input(1).length == N, "number of columns do not match")
-    require(R >= 1 && R <= Math.pow(10,9), "number of rotations must be greater than 1")
-    rotate(input.tail,R)
+    require(Math.min(M,N)%2 == 0, "Does not satisfy min(M, N) % 2 = 0 ")
+    require(R >= 1 && R <= Math.pow(10,9), "number of rotations must be greater than 0 " +
+      "and less than or equal to 10^9")
+    require(input.tail.forall(_.forall(p=> p >= 1 &&  p <= Math.pow(10,8))),
+      "Does not satisfy 1 <= aij <= 10^8, where i ∈ [1..M] & j ∈ [1..N]")
+
+    val rotated = rotate(input.drop(1),R)
+    rotated.map(_.mkString(" ")) foreach println
   }
 
   def rotate(mat:List[List[Int]],K:Int)={
     val M = mat.length
     val N = mat(0).length
-    val transformed = rotateMatrix(transpose(mat).toList,K)
-    val rotated = buildMatrix(transformed,M,N)
-    rotated.map(_.mkString(" ")) foreach println
-    rotated
+    val transformed = rotateMatrix(transpose(mat),K)
+    buildMatrix(transformed,M,N)
   }
 
   /**
@@ -43,7 +47,7 @@ object MatrixRotation {
   def transpose(lst:List[List[Int]]):List[List[Int]]={
     @tailrec
     def trans(ls:List[List[Int]],ac:List[List[Int]]):List[List[Int]]={
-      if(ls.isEmpty) ac
+      if(ls.isEmpty || ls.forall(_.isEmpty)) ac
       else if(ls.length == 1) ac ++ ls
       else {
         val g = ls.drop(1).dropRight(1)
@@ -51,13 +55,12 @@ object MatrixRotation {
         trans(ls.drop(1).dropRight(1).map(_.tail.dropRight(1)),p)
       }
     }
-    trans(lst,List())
+     trans(lst,List())
   }
 
-  @tailrec
-  def shiftRight(l:List[Int], n:Int = 1):List[Int] = {
-    if(n==1) l.tail :+ l.head
-    else shiftRight(l.tail :+ l.head, n-1)
+  def shiftRight(l:List[Int], n:Int):List[Int] =  {
+    for(i <- List.range(0, l.length))
+      yield l((i + n)% l.length)
   }
 
   /**
@@ -66,7 +69,7 @@ object MatrixRotation {
     * @param n number of rotations
     * @return
     */
-  def rotateMatrix(l:List[List[Int]],n:Int) =  l.filter(!_.isEmpty).map(shiftRight(_,n))
+  def rotateMatrix(l:List[List[Int]],n:Int) =  l.filter(!_.isEmpty).par.map(shiftRight(_,n)).toList
 
   /**
     * Build matrix from transposed list
